@@ -36,8 +36,18 @@ int main(int args, char **argv) {
 	EurOption put;
 	euroption_init(&put, put_payoff, put_strike, expiry);
 
+	// Digital Call Option
+	EurOption dcall;
+	euroption_init(&dcall, digital_call_payoff, call_strike, expiry);
+
+	// Digital Put Option
+	EurOption dput;
+	euroption_init(&dput, digital_put_payoff, put_strike, expiry);
+
 	double call_price = price_by_crr(&bm, &call);
 	double put_price = price_by_crr(&bm, &put);
+	double dcall_price = price_by_crr(&bm, &dcall);
+	double dput_price = price_by_crr(&bm, &dput);
 
 	printf("Binomial Market Model\n");
 	printf(
@@ -48,7 +58,8 @@ int main(int args, char **argv) {
 		"expiry: %d call strike: %.2f put strike: %.2f\n",
 		expiry, call.strike, put.strike
 	);
-	printf("Call: %.3f Put: %.3f\n", call_price, put_price);
+	printf("Call:        %6.3f Put:         %6.3f\n", call_price, put_price);
+	printf("Digtal Call: %6.3f Digital Put: %6.3f\n", dcall_price, dput_price);
 
 	return 0;
 }

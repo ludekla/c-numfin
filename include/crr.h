@@ -95,6 +95,22 @@ double call_payoff(double price, double strike);
 */
 double put_payoff(double price, double strike);
 
+/** @fn digital_call_payoff
+*   @brief Computes the payoff of the digital call option at expiry.
+*   @param price Current price of the underlying.
+*   @param strike Strike price of the call option.
+*   @return Call option price at expiry.
+*/
+double digital_call_payoff(double price, double strike);
+
+/** @fn digital_put_payoff
+*   @brief Computes the payoff of the digital put option at expiry.
+*   @param price Current price of the underlying.
+*   @param strike Strike price of the put option.
+*   @return Put option price at expiry.
+*/
+double digital_put_payoff(double price, double strike);
+
 /** @fn price_by_crr
 *   @brief CRR pricing function
 *   @param bm Pointer to the BinModel struct.

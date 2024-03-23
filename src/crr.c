@@ -45,6 +45,14 @@ double put_payoff(double price, double strike) {
     return (price > strike) ? 0.0 : strike - price;
 }
 
+double digital_call_payoff(double price, double strike) {
+    return (price > strike) ? 1.0 : 0.0;
+}
+
+double digital_put_payoff(double price, double strike) {
+    return (price > strike) ? 0.0 : 1.0;
+}
+
 // CRR pricing function
 double price_by_crr(BinModel * bm, EurOption * opt) {
     int expiry = opt->expiry;

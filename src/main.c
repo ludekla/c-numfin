@@ -43,31 +43,49 @@ int main(int args, char **argv) {
 	VanillaOption dput;
 	voption_init(&dput, DIGITAL_PUT, put_strike, expiry);
 
-	// Double Digital Option
-	DoubleOption dopt;
+	// Choose strikes for spread options
 	int put_greater = (put_strike > call_strike);
 	double upstrike = put_greater ? put_strike : call_strike;
 	double lostrike = put_greater ? call_strike : put_strike;
-	doption_init(&dopt, lostrike, upstrike, expiry);
+
+	// Double Digital Option
+	SpreadOption dopt;
+	soption_init(&dopt, DOUBLE_DIGIT, lostrike, upstrike, expiry);
+
+	// Bull and Bear Spreads
+	SpreadOption bull;
+	soption_init(&bull, BULL_SPREAD, lostrike, upstrike, expiry);
+	SpreadOption bear;
+	soption_init(&bear, BEAR_SPREAD, lostrike, upstrike, expiry);
 
 	// Let fly.
 	double call_price = voption_crr(call, bm);
 	double put_price = voption_crr(put, bm);
 	double dcall_price = voption_crr(dcall, bm);
 	double dput_price = voption_crr(dput, bm);
-	double dopt_price = doption_crr(dopt, bm);
+	double dopt_price = soption_crr(dopt, bm);
+	double bear_price = soption_crr(bear, bm);
+	double bull_price = soption_crr(bull, bm);
 
 	printf("Binomial Market Model\n");
+	printf("=====================\n");
 	printf(
 		"spot: %.3f uptick: %.5f downtick: %.5f rate: %.5f\n",
 		bm.spot, bm.uptick, bm.downtick, bm.rate
 	);
+	printf("-----------------\n");
+	printf("Option Parameters\n");
+	printf("=================\n");
 	printf(
 		"expiry: %d call strike: %.2f put strike: %.2f\n",
 		expiry, call.strike, put.strike
 	);
-	printf("Call:        %6.3f Put:         %6.3f\n", call_price, put_price);
-	printf("Digtal Call: %6.3f Digital Put: %6.3f\n", dcall_price, dput_price);
+	printf("-----------------\n");
+	printf("Option Prices\n");
+	printf("=============\n");
+	printf("Call:        %9.3f | Put:         %9.3f\n", call_price, put_price);
+	printf("Digtal Call: %9.3f | Digital Put: %9.3f\n", dcall_price, dput_price);
+	printf("Bear Spread: %9.3f | Bull Spread: %9.3f\n", bear_price, bull_price);
 	printf("Double Digit Option: %6.3f\n", dopt_price);
 
 	return 0;

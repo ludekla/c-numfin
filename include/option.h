@@ -12,7 +12,12 @@
 /** @enum OptionType
  *  @brief Option type of the plain vanilla option.
 */
-typedef enum { CALL, PUT, DIGITAL_CALL, DIGITAL_PUT } OptionType;
+typedef enum {
+    // plain vanilla with single strike parameter
+    CALL, PUT, DIGITAL_CALL, DIGITAL_PUT,
+    // options with spread: double-digital, bear and bull
+    DOUBLE_DIGIT, BEAR_SPREAD, BULL_SPREAD
+} OptionType;
 
 /** @struct VanillaOption
  *  
@@ -30,19 +35,22 @@ typedef struct VanillaOption_ {
     double (*payoff)(struct VanillaOption_ opt, double price);
 } VanillaOption;
 
-/** @struct DoubleOption
+/** @struct SpreadOption
  *  
- *  Holds the strike prices of a double digital option.
+ *  Holds the strike prices of an double digital, bear of bull options.
  * 
+ *  @var OptionType One of the 3 possible option types.
  *  @var strike_lo Lower strike price.
  *  @var strike_hi Upper strike price.
  *  @var expiry Expiry of the option. 
 */
-typedef struct {
+typedef struct SpreadOption_ {
+    OptionType opt_type;
     double strike_lo;
     double strike_hi;
     double expiry;
-} DoubleOption;
+    double (*payoff)(struct SpreadOption_ opt, double price);
+} SpreadOption;
 
 /** @fn voption_init
 *   @brief Initialise VanillaOption struct
@@ -52,14 +60,21 @@ typedef struct {
 */
 void voption_init(VanillaOption *opt, OptionType opt_type, double k, int t);
 
-/** @fn doption_init
-*   @brief Initialise DoubleOption struct
-*   @param opt Pointer to a DoubleOption struct.
+/** @fn soption_init
+*   @brief Initialise SpreadOption struct
+*   @param opt Pointer to a SpreadOption struct.
+*   @param opt_type Option type: double-digital, bull or bear 
 *   @param k_lo Lower strike price.
 *   @param k_hi Upper strike price.
 *   @param t Expiry of the option.
 */
-void doption_init(DoubleOption *opt, double k_lo, double k_hi, int t);
+void soption_init(
+    SpreadOption *opt, 
+    OptionType opt_type, 
+    double k_lo, 
+    double k_hi, 
+    int t
+);
 
 /** @fn call_payoff
 *   @brief Computes the payoff of the call option at expiry.
@@ -96,8 +111,24 @@ double dput_payoff(VanillaOption opt, double price);
 *   @brief Computes the payoff of the double digital option at expiry.
 *   @param opt DoubleOption struct.
 *   @param price Current price of the underlying.
-*   @return Put option price at expiry.
+*   @return Double digital option price at expiry.
 */
-double double_payoff(DoubleOption opt, double price);
+double double_payoff(SpreadOption opt, double price);
+
+/** @fn bear_payoff
+*   @brief Computes the payoff of the bear spread option at expiry.
+*   @param opt SpreadOption struct.
+*   @param price Current price of the underlying.
+*   @return bear spread option price at expiry.
+*/
+double bear_payoff(SpreadOption opt, double price);
+
+/** @fn bull_payoff
+*   @brief Computes the payoff of the bull spread option at expiry.
+*   @param opt SpreadOption struct.
+*   @param price Current price of the underlying.
+*   @return bull spread option price at expiry.
+*/
+double bull_payoff(SpreadOption opt, double price);
 
 #endif /*  _OPTION_H_ */

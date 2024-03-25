@@ -21,10 +21,27 @@ void voption_init(VanillaOption *opt, OptionType opt_type, double k, int t) {
 }
 
 // Double Digital Option functions
-void doption_init(DoubleOption *opt, double k_lo, double k_hi, int t) {
+void soption_init(
+    SpreadOption *opt, 
+    OptionType opt_type, 
+    double k_lo, 
+    double k_hi, 
+    int t
+) {
     opt->strike_lo = k_lo;
     opt->strike_hi = k_hi;
     opt->expiry = t;
+    switch (opt_type) {
+    case DOUBLE_DIGIT:
+        opt->payoff = double_payoff;
+        break;
+    case BEAR_SPREAD:
+        opt->payoff = bear_payoff;
+        break;
+    case BULL_SPREAD:
+        opt->payoff = bull_payoff;
+        break;
+    }
 }
 
 // payoff functions
@@ -44,6 +61,24 @@ double dput_payoff(VanillaOption opt, double price) {
     return (price > opt.strike) ? 0.0 : 1.0;
 }
 
-double double_payoff(DoubleOption opt, double price) {
+double double_payoff(SpreadOption opt, double price) {
     return (price >= opt.strike_lo && price <= opt.strike_hi) ? 1.0 : 0.0;
+}
+
+double bear_payoff(SpreadOption opt, double price) {
+    if (price < opt.strike_lo)
+        return opt.strike_hi - opt.strike_lo;
+    else if (price > opt.strike_hi)
+        return 0.0;
+    else
+        return opt.strike_hi - price;
+}
+
+double bull_payoff(SpreadOption opt, double price) {
+    if (price > opt.strike_lo)
+        return opt.strike_hi - opt.strike_lo;
+    else if (price < opt.strike_hi)
+        return 0.0;
+    else
+        return price - opt.strike_lo;
 }

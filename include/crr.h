@@ -69,12 +69,12 @@ void crr(BinModel bm, int expiry, double * prices);
 */
 double voption_crr(VanillaOption opt, BinModel bm);
 
-/** @fn doption_crr
-*   @brief CRR pricing function for double digit option.
+/** @fn soption_crr
+*   @brief CRR pricing function for a spread option.
 *   @param bm BinModel struct.
-*   @param opt DoubleOption struct.
-*   @return Price of the option.
+*   @param opt SpreadOption struct.
+*   @return Price of the spread option.
 */
-double doption_crr(DoubleOption opt, BinModel bm);
+double soption_crr(SpreadOption opt, BinModel bm);
 
 #endif /* _CRR_H */

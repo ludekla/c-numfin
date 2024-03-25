@@ -42,12 +42,12 @@ void crr(BinModel bm, int expiry, double * prices) {
     }
 }
 
-double doption_crr(DoubleOption opt, BinModel bm) {
+double soption_crr(SpreadOption opt, BinModel bm) {
     double * prices = (double *) malloc((opt.expiry + 1) * sizeof(double));
     // fill last time slice
     for (int i = 0; i <= opt.expiry; i++) {
         double underlying = binmodel_price(bm, opt.expiry, i);
-        prices[i] = double_payoff(opt, underlying);
+        prices[i] = opt.payoff(opt, underlying);
     }
     crr(bm, opt.expiry, prices);
     double result = prices[0];

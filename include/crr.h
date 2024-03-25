@@ -9,10 +9,12 @@
 #ifndef _CRR_H
 #define _CRR_H
 
+#include "option.h"
+
 /** @struct BinModel 
  * 
  *  Holds the parameters of the binomial market model. 
- *  
+ *  ion
  *  @var spot Spot price of the underlying.
  *  @var uptick Relative uptick of the underlying. 
  *  @var downtick Relative downtick of the underlying.
@@ -24,26 +26,6 @@ typedef struct {
     double downtick;  
     double rate;    
 } BinModel;
-
-/** @typedef Payoff 
- *  Payoff function for the contingent claim.
-*/
-typedef double (*Payoff)(double price, double strike);
-
-/** @struct EurOption
- *  
- *  Holds the strike price of a European option and 
- *  a pointer to its payoff function.
- * 
- *  @var strike Strike price.
- *  @var expiry Expiry of the option. 
- *  @var payoff Function pointer to payoff function. 
-*/
-typedef struct {
-    double strike;
-    double expiry;
-    Payoff payoff;
-} EurOption;
 
 /** @fn binmodel_init
 *   @brief Initialise binomial model
@@ -57,66 +39,42 @@ void binmodel_init(BinModel *bm, double s, double u, double d, double r);
 
 /** @fn binmodel_prob 
 *   @brief Computes risk-neutral probability.
-*   @param bm Pointer to the BinModel struct.
+*   @param bm BinModel struct.
 *   @return Risk-neutral probability (aka martingale probability).
 */
-double binmodel_prob(BinModel * bm);
+double binmodel_prob(BinModel bm);
 
 /** @fn binmodel_price 
 *   @brief Computes the price of the underlying after n upticks.
-*   @param bm Pointer to the BinModel struct.
+*   @param bm BinModel struct.
 *   @param expiry Expiry of the option.
 *   @param n_upticks Number of upticks undergone by the underlying.
 */ 
-double binmodel_price(BinModel *bm, int expiry, int n_upticks);
+double binmodel_price(BinModel bm, int expiry, int n_upticks);
 
-// European Option functions
-/** @brief initialise EurOption struct
-*   @param opt Pointer to a EurOption struct.
-*   @param payoff Function pointer to payoff function.
-*   @param k Strike price.
-*   @param t Expiry of the option.
+/** @fn crr
+*   @brief Non-public function for computing the option price by CRR
+*   @param bm BinModel struct.
+*   @param expiry Expiry of the option.
+*   @param prices Array of prices.
+*   @return Price of the option. 
 */
-void euroption_init(EurOption *opt, Payoff payoff, double k, int t);
+void crr(BinModel bm, int expiry, double * prices);
 
-/** @fn call_payoff
-*   @brief Computes the payoff of the call option at expiry.
-*   @param price Current price of the underlying.
-*   @param strike Strike price of the call option.
-*   @return Call option price at expiry.
-*/
-double call_payoff(double price, double strike);
-
-/** @fn put_payoff
-*   @brief Computes the payoff of the put option at expiry.
-*   @param price Current price of the underlying.
-*   @param strike Strike price of the put option.
-*   @return Put option price at expiry.
-*/
-double put_payoff(double price, double strike);
-
-/** @fn digital_call_payoff
-*   @brief Computes the payoff of the digital call option at expiry.
-*   @param price Current price of the underlying.
-*   @param strike Strike price of the call option.
-*   @return Call option price at expiry.
-*/
-double digital_call_payoff(double price, double strike);
-
-/** @fn digital_put_payoff
-*   @brief Computes the payoff of the digital put option at expiry.
-*   @param price Current price of the underlying.
-*   @param strike Strike price of the put option.
-*   @return Put option price at expiry.
-*/
-double digital_put_payoff(double price, double strike);
-
-/** @fn price_by_crr
-*   @brief CRR pricing function
-*   @param bm Pointer to the BinModel struct.
-*   @param opt Pointer to a EurOption struct.
+/** @fn voption_crr
+*   @brief CRR pricing function for plain vanilla option.
+*   @param bm BinModel struct.
+*   @param opt VanillaOption struct.
 *   @return Price of the option.
 */
-double price_by_crr(BinModel * bm, EurOption * opt);
+double voption_crr(VanillaOption opt, BinModel bm);
+
+/** @fn doption_crr
+*   @brief CRR pricing function for double digit option.
+*   @param bm BinModel struct.
+*   @param opt DoubleOption struct.
+*   @return Price of the option.
+*/
+double doption_crr(DoubleOption opt, BinModel bm);
 
 #endif /* _CRR_H */

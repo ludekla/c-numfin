@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include "crr.h"
+#include "option.h"
 
 // DO NOT FORGET THE -lm FLAG TO INCLUDE THE MATH LIB!
 
@@ -29,25 +30,32 @@ int main(int args, char **argv) {
 	binmodel_init(&bm, 100.0, 0.01, -0.01, 0.005);
 
 	// Call Option
-	EurOption call;
-	euroption_init(&call, call_payoff, call_strike, expiry);
-
+	VanillaOption call;
+	voption_init(&call, CALL, call_strike, expiry);
+	
 	// Put Option
-	EurOption put;
-	euroption_init(&put, put_payoff, put_strike, expiry);
+	VanillaOption put;
+	voption_init(&put, PUT, put_strike, expiry);
 
-	// Digital Call Option
-	EurOption dcall;
-	euroption_init(&dcall, digital_call_payoff, call_strike, expiry);
+	// Digital Options
+	VanillaOption dcall;
+	voption_init(&dcall, DIGITAL_CALL, call_strike, expiry);
+	VanillaOption dput;
+	voption_init(&dput, DIGITAL_PUT, put_strike, expiry);
 
-	// Digital Put Option
-	EurOption dput;
-	euroption_init(&dput, digital_put_payoff, put_strike, expiry);
+	// Double Digital Option
+	DoubleOption dopt;
+	int put_greater = (put_strike > call_strike);
+	double upstrike = put_greater ? put_strike : call_strike;
+	double lostrike = put_greater ? call_strike : put_strike;
+	doption_init(&dopt, lostrike, upstrike, expiry);
 
-	double call_price = price_by_crr(&bm, &call);
-	double put_price = price_by_crr(&bm, &put);
-	double dcall_price = price_by_crr(&bm, &dcall);
-	double dput_price = price_by_crr(&bm, &dput);
+	// Let fly.
+	double call_price = voption_crr(call, bm);
+	double put_price = voption_crr(put, bm);
+	double dcall_price = voption_crr(dcall, bm);
+	double dput_price = voption_crr(dput, bm);
+	double dopt_price = doption_crr(dopt, bm);
 
 	printf("Binomial Market Model\n");
 	printf(
@@ -60,6 +68,7 @@ int main(int args, char **argv) {
 	);
 	printf("Call:        %6.3f Put:         %6.3f\n", call_price, put_price);
 	printf("Digtal Call: %6.3f Digital Put: %6.3f\n", dcall_price, dput_price);
+	printf("Double Digit Option: %6.3f\n", dopt_price);
 
 	return 0;
 }

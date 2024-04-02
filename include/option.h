@@ -20,7 +20,8 @@ typedef enum {
 } OptionType;
 
 /** @struct VanillaOption
- *  
+ *  @brief 
+ * 
  *  Holds the parameters of plain vanilla European (digital) 
  *  call or put option.
  * 
@@ -131,4 +132,4 @@ double bear_payoff(SpreadOption opt, double price);
 */
 double bull_payoff(SpreadOption opt, double price);
 
-#endif /*  _OPTION_H_ */
+#endif /* _OPTION_H_ */

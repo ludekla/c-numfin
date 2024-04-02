@@ -5,12 +5,10 @@
  * 
  *  @author Lutz
 */
-
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "crr.h"
-#include "option.h"
 
 // DO NOT FORGET THE -lm FLAG TO INCLUDE THE MATH LIB!
 
@@ -21,13 +19,20 @@ int main(int args, char **argv) {
 		printf("Usage: bin/crr [expiry] [call strike] [put strike]\n");
 		exit(1);
 	} 
-
+	// Market data.
 	int expiry = atoi(argv[1]);
 	double call_strike = atof(argv[2]);
 	double put_strike = atof(argv[3]);
 
+	// Option data.
+	double spot = 100.0;
+	double utick = 0.01;
+	double dtick = -0.01;
+	double rate = 0.005;
+
+	// Set up market model.
 	BinModel bm;
-	binmodel_init(&bm, 100.0, 0.01, -0.01, 0.005);
+	binmodel_init(&bm, spot, utick, dtick, rate);
 
 	// Call Option
 	VanillaOption call;

@@ -10,7 +10,6 @@
 #include <stdlib.h>
 
 #include "crr.h"
-#include "option.h"
 
 // Binomial Model functions
 void binmodel_init(BinModel *bm, double s, double u, double d, double r) {

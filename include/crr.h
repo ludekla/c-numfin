@@ -6,8 +6,8 @@
  *  @author Lutz 
 */
 
-#ifndef _CRR_H
-#define _CRR_H
+#ifndef _CRR_H_
+#define _CRR_H_
 
 #include "option.h"
 
@@ -77,4 +77,4 @@ double voption_crr(VanillaOption opt, BinModel bm);
 */
 double soption_crr(SpreadOption opt, BinModel bm);
 
-#endif /* _CRR_H */
+#endif /* _CRR_H_ */

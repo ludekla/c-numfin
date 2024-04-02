@@ -14,7 +14,7 @@ will evolve.
 
 # Book
 
-- Authours: Maciej J. Capiński, Tomasz Zastawniak: 
+- Authors: Maciej J. Capiński, Tomasz Zastawniak
 - Title: Numerical Methods in Finance with C++
 - Publisher: Cambridge University Press
 - Year: 2014

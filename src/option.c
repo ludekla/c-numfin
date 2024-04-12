@@ -9,7 +9,7 @@
 #include "option.h"
 
 // Vanilla Option functions
-void voption_init(VanillaOption *opt, OptionType opt_type, double k, int t) {
+void voption_init(VanillaOption *opt, VanillaType opt_type, double k, int t) {
     opt->strike = k;
     opt->expiry = t;
     switch (opt_type) {
@@ -23,7 +23,7 @@ void voption_init(VanillaOption *opt, OptionType opt_type, double k, int t) {
 // Double Digital Option functions
 void soption_init(
     SpreadOption *opt, 
-    OptionType opt_type, 
+    SpreadType opt_type, 
     double k_lo, 
     double k_hi, 
     int t
@@ -75,9 +75,9 @@ double bear_payoff(SpreadOption opt, double price) {
 }
 
 double bull_payoff(SpreadOption opt, double price) {
-    if (price > opt.strike_lo)
+    if (price > opt.strike_hi)
         return opt.strike_hi - opt.strike_lo;
-    else if (price < opt.strike_hi)
+    else if (price < opt.strike_lo)
         return 0.0;
     else
         return price - opt.strike_lo;

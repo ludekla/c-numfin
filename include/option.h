@@ -9,15 +9,13 @@
 #ifndef _OPTION_H_
 #define _OPTION_H_
 
-/** @enum OptionType
+/** @enum VanillaType
  *  @brief Option type of the plain vanilla option.
 */
 typedef enum {
     // plain vanilla with single strike parameter
-    CALL, PUT, DIGITAL_CALL, DIGITAL_PUT,
-    // options with spread: double-digital, bear and bull
-    DOUBLE_DIGIT, BEAR_SPREAD, BULL_SPREAD
-} OptionType;
+    CALL, PUT, DIGITAL_CALL, DIGITAL_PUT
+} VanillaType;
 
 /** @struct VanillaOption
  *  @brief 
@@ -25,16 +23,24 @@ typedef enum {
  *  Holds the parameters of plain vanilla European (digital) 
  *  call or put option.
  * 
- *  @var opt_type Option type, call or put
+ *  @var opt_type Vanilla option type, eg call or put
  *  @var strike Strike price.
  *  @var expiry Expiry of the option.
 */
 typedef struct VanillaOption_ {
-    OptionType opt_type;
+    VanillaType opt_type;
     double strike;
     double expiry;
     double (*payoff)(struct VanillaOption_ opt, double price);
 } VanillaOption;
+
+/** @enum SpreadType
+ *  @brief Option type of the spread option.
+*/
+typedef enum {
+    // options with spread: double-digital, bear and bull
+    DOUBLE_DIGIT, BEAR_SPREAD, BULL_SPREAD
+} SpreadType;
 
 /** @struct SpreadOption
  *  
@@ -46,7 +52,7 @@ typedef struct VanillaOption_ {
  *  @var expiry Expiry of the option. 
 */
 typedef struct SpreadOption_ {
-    OptionType opt_type;
+    SpreadType opt_type;
     double strike_lo;
     double strike_hi;
     double expiry;
@@ -59,7 +65,7 @@ typedef struct SpreadOption_ {
 *   @param k Strike price.
 *   @param t Expiry of the option.
 */
-void voption_init(VanillaOption *opt, OptionType opt_type, double k, int t);
+void voption_init(VanillaOption *opt, VanillaType opt_type, double k, int t);
 
 /** @fn soption_init
 *   @brief Initialise SpreadOption struct
@@ -71,7 +77,7 @@ void voption_init(VanillaOption *opt, OptionType opt_type, double k, int t);
 */
 void soption_init(
     SpreadOption *opt, 
-    OptionType opt_type, 
+    SpreadType opt_type, 
     double k_lo, 
     double k_hi, 
     int t
